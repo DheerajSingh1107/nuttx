@@ -37,7 +37,7 @@
 #endif
 
 #ifndef CONFIG_ARCH_LEDS
-# include <nuttx/leds/userled.h>
+#  include <nuttx/leds/userled.h>
 #endif
 
 /****************************************************************************
@@ -64,22 +64,11 @@ int stm32_bringup(void)
   int ret = OK;
 
 #ifndef CONFIG_ARCH_LEDS
-  /* Register the LED driver */
-
-  ret = userled_lower_initialize("/dev/userleds");
+  ret = userled_lower_initialize(LED_DRIVER_PATH);
   if (ret < 0)
     {
-      syslog(LOG_ERR, "ERROR: userled_lower_initialize failed: %d\n", ret);
-    }
-#endif
-
-#ifdef CONFIG_INPUT_BUTTONS 
-  /* Register the BUTTON driver */
-
-  ret = btn_lower_initialize("/dev/buttons");
-  if (ret < 0)
-    {
-      syslog(LOG_ERR, "ERROR: board_button_initialize failed: %d\n", ret);
+      syslog(LOG_ERR, "ERROR: userled_lower_initialize() failed: %d\n", ret);
+      return ret;
     }
 #endif
 

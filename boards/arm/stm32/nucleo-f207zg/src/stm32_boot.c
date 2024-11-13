@@ -56,6 +56,8 @@ void stm32_boardinitialize(void)
   /* Configure on-board LEDs if LED support has been selected. */
 
   board_autoled_initialize();
+#else 
+  board_userled_initialize();
 #endif
 
 #if defined(CONFIG_STM32_OTGFS) || defined(CONFIG_STM32_HOST)
