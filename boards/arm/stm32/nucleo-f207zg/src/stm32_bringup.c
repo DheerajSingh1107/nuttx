@@ -36,6 +36,10 @@
 #  include <nuttx/input/buttons.h>
 #endif
 
+#ifndef CONFIG_ARCH_LEDS
+# include <nuttx/leds/userled.h>
+#endif
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -58,6 +62,26 @@
 int stm32_bringup(void)
 {
   int ret = OK;
+
+#ifndef CONFIG_ARCH_LEDS
+  /* Register the LED driver */
+
+  ret = userled_lower_initialize("/dev/userleds");
+  if (ret < 0)
+    {
+      syslog(LOG_ERR, "ERROR: userled_lower_initialize failed: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_INPUT_BUTTONS
+  /* Register the BUTTON driver */
+
+  ret = btn_lower_initialize("/dev/buttons");
+  if (ret < 0)
+    {
+      syslog(LOG_ERR, "ERROR: board_button_initialize failed: %d\n", ret);
+    }
+#endif
 
 #ifdef CONFIG_ADC
   /* Initialize ADC and register the ADC driver. */
