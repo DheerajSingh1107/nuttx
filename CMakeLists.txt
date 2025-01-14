@@ -85,9 +85,16 @@ endif()
 
 find_program(KCONFIGLIB olddefconfig)
 if(NOT KCONFIGLIB)
+  # cmake-format: off
   message(
     FATAL_ERROR "Kconfig environment depends on kconfiglib, Please install:
-  $ sudo pip3 install kconfiglib")
+  (APT source)
+    $ sudo apt install python3-kconfiglib
+  or (pip source)
+    $ pip install kconfiglib
+  or (After Ubuntu 24.04)
+    $ pip install kconfiglib --break-system-packages")
+  # cmake-format: on
 endif()
 
 # BOARD CONFIG can be set to directory path, or <board-name>[/:]<config-name>
@@ -727,6 +734,7 @@ else()
       OUTPUT nuttx.rel
       COMMAND
         ${CMAKE_C_COMPILER} ARGS -r $<$<BOOL:${CONFIG_SIM_M32}>:-m32>
+        $<$<BOOL:${CONFIG_HOST_LINUX}>:-Wl,-z,noexecstack>
         $<TARGET_OBJECTS:sim_head> $<$<NOT:$<BOOL:${APPLE}>>:-Wl,--start-group>
         ${nuttx_libs_paths} $<$<NOT:$<BOOL:${APPLE}>>:-Wl,--end-group> -o
         nuttx.rel

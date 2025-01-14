@@ -1,5 +1,5 @@
 ############################################################################
-# sched/pthread/Make.defs
+# libs/libc/modlib/Makefile
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -20,28 +20,21 @@
 #
 ############################################################################
 
-ifneq ($(CONFIG_DISABLE_PTHREAD),y)
+include $(TOPDIR)/Make.defs
 
-CSRCS += pthread_create.c pthread_exit.c pthread_join.c pthread_detach.c
-CSRCS += pthread_getschedparam.c pthread_setschedparam.c
-CSRCS += pthread_mutexinit.c pthread_mutexdestroy.c
-CSRCS += pthread_mutextimedlock.c pthread_mutextrylock.c pthread_mutexunlock.c
-CSRCS += pthread_condwait.c pthread_condsignal.c pthread_condbroadcast.c
-CSRCS += pthread_condclockwait.c pthread_sigmask.c pthread_cancel.c
-CSRCS += pthread_completejoin.c pthread_findjoininfo.c
-CSRCS += pthread_release.c pthread_setschedprio.c
+# Generate gnu-elf.ld from gnu-elf.ld.in
 
-ifneq ($(CONFIG_PTHREAD_MUTEX_UNSAFE),y)
-CSRCS += pthread_mutex.c pthread_mutexconsistent.c
-endif
+gnu-elf.ld: gnu-elf.ld.in
+	$(call PREPROCESS, $<, $@)
 
-ifeq ($(CONFIG_SMP),y)
-CSRCS += pthread_setaffinity.c pthread_getaffinity.c
-endif
+# Create initial context
 
-# Include pthread build support
+context: gnu-elf.ld
 
-DEPPATH += --dep-path pthread
-VPATH += :pthread
+.PHONY: context clean distclean
 
-endif # CONFIG_DISABLE_PTHREAD
+clean:
+	$(call CLEAN)
+
+distclean: clean
+	$(call DELFILE, gnu-elf.ld)

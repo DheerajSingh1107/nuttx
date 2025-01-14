@@ -48,6 +48,7 @@
 #include <nuttx/net/net.h>
 #include <nuttx/mm/map.h>
 #include <nuttx/tls.h>
+#include <nuttx/spinlock_type.h>
 
 #include <arch/arch.h>
 
@@ -72,32 +73,6 @@
 
 #ifndef CONFIG_SCHED_SPORADIC_MAXREPL
 #  define CONFIG_SCHED_SPORADIC_MAXREPL 3
-#endif
-
-/* Scheduling monitor */
-
-#ifndef CONFIG_SCHED_CRITMONITOR_MAXTIME_THREAD
-#  define CONFIG_SCHED_CRITMONITOR_MAXTIME_THREAD -1
-#endif
-
-#ifndef CONFIG_SCHED_CRITMONITOR_MAXTIME_WQUEUE
-#  define CONFIG_SCHED_CRITMONITOR_MAXTIME_WQUEUE -1
-#endif
-
-#ifndef CONFIG_SCHED_CRITMONITOR_MAXTIME_PREEMPTION
-#  define CONFIG_SCHED_CRITMONITOR_MAXTIME_PREEMPTION -1
-#endif
-
-#ifndef CONFIG_SCHED_CRITMONITOR_MAXTIME_CSECTION
-#  define CONFIG_SCHED_CRITMONITOR_MAXTIME_CSECTION -1
-#endif
-
-#ifndef CONFIG_SCHED_CRITMONITOR_MAXTIME_IRQ
-#  define CONFIG_SCHED_CRITMONITOR_MAXTIME_IRQ -1
-#endif
-
-#ifndef CONFIG_SCHED_CRITMONITOR_MAXTIME_WDOG
-#  define CONFIG_SCHED_CRITMONITOR_MAXTIME_WDOG -1
 #endif
 
 /* Task Management Definitions **********************************************/
@@ -736,6 +711,10 @@ struct tcb_s
   size_t caller_deepest;
   size_t level_deepest;
   size_t level;
+#endif
+
+#ifndef CONFIG_PTHREAD_MUTEX_UNSAFE
+  spinlock_t mutex_lock;
 #endif
 };
 
