@@ -32,7 +32,7 @@
 
 #include "nucleo-f207zg.h"
 
-#ifdef CONFIG_INPUT_BUTTONS
+#ifdef CONFIG_INPUT_BUTTONS || CONFIG_INPUT_BUTTONS_CUSTOM
 #  include <nuttx/input/buttons.h>
 #endif
 
@@ -73,7 +73,7 @@ int stm32_bringup(void)
     }
 #endif
 
-#ifdef CONFIG_INPUT_BUTTONS
+#ifdef CONFIG_INPUT_BUTTONS 
   /* Register the BUTTON driver */
 
   ret = btn_lower_initialize("/dev/buttons");
