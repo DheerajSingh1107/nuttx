@@ -1,0 +1,31 @@
+include $(TOPDIR)/Make.defs
+
+CSRCS = stm32_boot.c stm32_bringup.c
+
+ifeq ($(CONFIG_BOARDCTL),y)
+CSRCS += stm32_appinit.c
+endif
+
+ifeq ($(CONFIG_STM32_SPI),y)
+CSRCS += stm32_spi.c
+endif
+
+ifeq ($(CONFIG_PWM),y)
+ifeq ($(CONFIG_STM32_TIM1_PWM),y)
+CSRCS += stm32_pwm.c
+endif
+endif
+
+ifeq ($(CONFIG_ADC),y)
+ifneq ($(filter y,$(CONFIG_STM32_ADC1) $(CONFIG_STM32_ADC2) $(CONFIG_STM32_ADC3)),)
+CSRCS += stm32_adc.c
+endif
+endif
+
+ifeq ($(CONFIG_STM32_CAN_SOCKET),y)
+CSRCS += stm32_cansock.c
+endif
+
+DEPPATH += --dep-path board
+VPATH += :board
+CFLAGS += ${INCDIR_PREFIX}$(TOPDIR)$(DELIM)arch$(DELIM)$(CONFIG_ARCH)$(DELIM)src$(DELIM)board$(DELIM)board
